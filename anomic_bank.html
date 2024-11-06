@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anomic Bank</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #00aaff;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        header .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        header .sub-logo {
+            font-size: 1.2em;
+            font-weight: normal;
+            margin-top: 10px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .hero {
+            background: url('https://th.bing.com/th/id/OIP.s9z0y7ylJnOP30umC0qY_gHaEd?rs=1&pid=ImgDetMain') no-repeat center center/cover;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            font-weight: bold;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .hero button {
+            padding: 12px 30px;
+            background-color: #00cc99;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .hero button:hover {
+            background-color: #009c80;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .login-section, .register-section, .dashboard-section, .history-section {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .input-field {
+            padding: 12px;
+            width: 300px;
+            margin: 15px 0;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .input-error {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        .input-success {
+            color: green;
+            font-size: 0.9em;
+        }
+
+        button {
+            padding: 12px 30px;
+            background-color: #2a9df4;
+            color: white;
+            font-size: 1.2em;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #1d7bcd;
+        }
+
+        #balance {
+            font-size: 1.5em;
+            margin: 20px;
+        }
+        
+        .restricted-action {
+            color: red;
+            font-size: 1.2em;
+        }
+
+        .history-section {
+            margin-top: 30px;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .history-section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .history-section li {
+            padding: 8px;
+            background-color: #f2f2f2;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Anomic Bank</div>
+    <div class="sub-logo">Anomic Digital - Online Banking</div>
+</header>
+
+<section class="hero">
+    <div>
+        <h1>Welcome to Anomic Bank</h1>
+        <p>Your online banking experience, now easier and safer.</p>
+        <button onclick="showLoginForm()">Secure Login</button>
+        <button onclick="showRegisterForm()">Create Account</button>
+    </div>
+</section>
+
+<!-- Register Section -->
+<section id="register-section" class="register-section" style="display: none;">
+    <h2>Create Your Anomic Bank Account</h2>
+    <input type="text" id="register-username" class="input-field" placeholder="Enter Username">
+    <input type="text" id="register-iban" class="input-field" placeholder="Enter IBAN (AM24XXXX)" oninput="checkIBAN()">
+    <span id="iban-feedback"></span>
+    <input type="password" id="register-pin" class="input-field" placeholder="Enter PIN">
+    <button onclick="registerAccount()">Register</button>
+</section>
+
+<!-- Login Section -->
+<section id="login-section" class="login-section" style="display: none;">
+    <h2>Login to Your Anomic Bank Account</h2>
+    <input type="text" id="login-iban" class="input-field" placeholder="Enter IBAN (AM24XXXX)">
+    <input type="password" id="login-pin" class="input-field" placeholder="Enter PIN">
+    <button onclick="login()">Login</button>
+    <p>Don't have an account? <a href="#" onclick="showRegisterForm()">Register here</a></p>
+</section>
+
+<!-- Dashboard Section -->
+<section id="dashboard-section" class="dashboard-section" style="display: none;">
+    <h2>Welcome, <span id="username-display"></span></h2>
+    <p>Your IBAN: <span id="iban-display"></span></p>
+    <div id="balance">Your balance: $<span id="balance-display">0.00</span></div>
+    <div id="dashboard-actions">
+        <button onclick="withdrawMoney()">Withdraw</button>
+        <button onclick="depositMoney()">Deposit</button>
+        <button onclick="transferMoney()">Transfer Money</button>
+    </div>
+    <div id="transaction-history">
+        <button onclick="showTransactionHistory()">View Transaction History</button>
+    </div>
+    <button onclick="logout()">Logout</button>
+</section>
+
+<!-- Transaction History Section -->
+<section id="history-section" class="history-section" style="display: none;">
+    <h3>Transaction History</h3>
+    <ul id="history-list"></ul>
+    <button onclick="hideTransactionHistory()">Close</button>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>© 2024 Anomic Bank. All rights reserved.</p>
+</footer>
+
+<script>
+    let userLoggedIn = false;
+    let userBalance = 1000.00; // Example balance
+    let userUsername = '';
+    let userIban = '';
+    let userPin = '';
+    let transactionHistory = []; // Store transaction history
+
+    function showLoginForm() {
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('register-section').style.display = 'none';
+        document.getElementById('dashboard-section').style.display = 'none';
+        document.getElementById('history-section').style.display = 'none';
+    }
+
+    function showRegisterForm() {
+        document.getElementById('register-section').style.display = 'block';
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('dashboard-section').style.display = 'none';
+        document.getElementById('history-section').style.display = 'none';
+    }
+
+    function checkIBAN() {
+        const iban = document.getElementById('register-iban').value;
+        const feedback = document.getElementById('iban-feedback');
+        if (iban.length < 16) {
+            feedback.textContent = `${16 - iban.length} characters missing.`;
+            feedback.className = 'input-error';
+        } else if (iban.length === 16) {
+            feedback.textContent = 'IBAN is valid!';
+            feedback.className = 'input-success';
+        } else {
+            feedback.textContent = 'IBAN should be 16 characters.';
+            feedback.className = 'input-error';
+        }
+    }
+
+    function registerAccount() {
+        const username = document.getElementById('register-username').value;
+        const iban = document.getElementById('register-iban').value;
+        const pin = document.getElementById('register-pin').value;
+
+        if (iban.length !== 16 || pin.length === 0 || username.length === 0) {
+            alert('Please complete all fields correctly.');
+            return;
+        }
+
+        // Save user data to localStorage for simplicity (no real database here)
+        localStorage.setItem('username', username);
+        localStorage.setItem('iban', iban);
+        localStorage.setItem('pin', pin);
+
+        alert('Account created successfully!');
+        showLoginForm();
+    }
+
+    function login() {
+        const iban = document.getElementById('login-iban').value;
+        const pin = document.getElementById('login-pin').value;
+        const storedIban = localStorage.getItem('iban');
+        const storedPin = localStorage.getItem('pin');
+        const storedUsername = localStorage.getItem('username');
+
+        if (iban === storedIban && pin === storedPin) {
+            userLoggedIn = true;
+            userUsername = storedUsername;
+            userIban = storedIban;
+            userPin = storedPin;
+
+            // Show Dashboard
+            document.getElementById('username-display').textContent = userUsername;
+            document.getElementById('iban-display').textContent = userIban;
+            document.getElementById('balance-display').textContent = userBalance.toFixed(2);
+
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+        } else {
+            alert('Invalid IBAN or PIN.');
+        }
+    }
+
+    function logout() {
+        userLoggedIn = false;
+        document.getElementById('dashboard-section').style.display = 'none';
+        showLoginForm();
+    }
+
+    function depositMoney() {
+        if (!userLoggedIn) {
+            alert('You need to log in to deposit money.');
+            return;
+        }
+
+        const amount = prompt('Enter the amount to deposit:');
+        if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
+            userBalance += parseFloat(amount);
+            alert(`Deposited $${amount}. Your new balance is $${userBalance.toFixed(2)}.`);
+            addTransaction('Deposit', amount);
+        }
+    }
+
+    function withdrawMoney() {
+        if (!userLoggedIn) {
+            alert('You need to log in to withdraw money.');
+            return;
+        }
+
+        const amount = prompt('Enter the amount to withdraw:');
+        if (amount && !isNaN(amount) && parseFloat(amount) > 0 && userBalance >= amount) {
+            userBalance -= parseFloat(amount);
+            alert(`Withdrew $${amount}. Your new balance is $${userBalance.toFixed(2)}.`);
+            addTransaction('Withdrawal', amount);
+        } else {
+            alert('Invalid amount or insufficient funds.');
+        }
+    }
+
+    function transferMoney() {
+        if (!userLoggedIn) {
+            alert('You need to log in to transfer money.');
+            return;
+        }
+
+        const recipientIban = prompt('Enter recipient IBAN:');
+        const amount = prompt('Enter the amount to transfer:');
+        if (amount && !isNaN(amount) && parseFloat(amount) > 0 && userBalance >= amount) {
+            userBalance -= parseFloat(amount);
+            addTransaction('Transfer', amount, recipientIban);
+            alert(`Transferred $${amount} to ${recipientIban}. Your new balance is $${userBalance.toFixed(2)}.`);
+        } else {
+            alert('Invalid transfer details or insufficient funds.');
+        }
+    }
+
+    function addTransaction(type, amount, recipientIban = '') {
+        const transaction = {
+            type: type,
+            amount: amount,
+            date: new Date().toLocaleString(),
+            recipient: recipientIban
+        };
+        transactionHistory.push(transaction);
+    }
+
+    function showTransactionHistory() {
+        const historyList = document.getElementById('history-list');
+        historyList.innerHTML = ''; // Clear previous history
+
+        if (transactionHistory.length === 0) {
+            historyList.innerHTML = '<li>No transactions yet.</li>';
+        } else {
+            transactionHistory.forEach((transaction) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${transaction.date} - ${transaction.type} of $${transaction.amount} to ${transaction.recipient || 'your account'}`;
+                historyList.appendChild(listItem);
+            });
+        }
+
+        document.getElementById('history-section').style.display = 'block';
+    }
+
+    function hideTransactionHistory() {
+        document.getElementById('history-section').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
